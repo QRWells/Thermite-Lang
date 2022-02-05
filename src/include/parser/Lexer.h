@@ -31,24 +31,16 @@ public:
   Lexer(std::ifstream const &file);
   ~Lexer() = default;
 
-  [[nodiscard]] auto getToken() -> TokenClass;
-  [[nodiscard]] auto getNumber() const -> double;
-  [[nodiscard]] auto getIdentifier() const -> std::string;
-  [[nodiscard]] auto getUnknown() const -> char;
-  [[nodiscard]] auto getBinOperator() const -> BinaryOperation;
+  [[nodiscard]] auto getToken() -> Token;
 
 private:
   std::string Code;
-  std::string IdentifierStr;
-  BinaryOperation BinaryOperator = BinaryOperation::Add;
   char LastChar = ' ';
 
   const std::unordered_map<std::string, TokenClass> KeyMap = {
-      {"for", TokenClass::Keyword},
-      {"if", TokenClass::Keyword},
-      {"then", TokenClass::Keyword},
-      {"else", TokenClass::Keyword},
-      {"func", TokenClass::Func}};
+      {"for", TokenClass::Keyword},  {"while", TokenClass::Keyword},
+      {"if", TokenClass::Keyword},   {"then", TokenClass::Keyword},
+      {"else", TokenClass::Keyword}, {"func", TokenClass::Func}};
 
   const std::set<char> BinOperator = {'+', '-', '*', '/', '%', '|',
                                       '^', '&', '>', '<', '='};
@@ -59,17 +51,15 @@ private:
       {'{', TokenClass::LeftCuBra}, {'}', TokenClass::RightCuBra},
   };
 
-  double NumberVal = 0;
   std::basic_string<char>::iterator Iter;
   size_t LineNo = 1;
   size_t Offset = 0;
-  char Unknown = 0;
 
   auto fetchChar() -> void;
-  auto proceedNumber() -> TokenClass;
-  auto proceedIdentifier() -> TokenClass;
-  auto proceedBracket() -> TokenClass;
-  auto proceedOperator() -> TokenClass;
+  auto proceedNumber() -> Token;
+  auto proceedIdentifier() -> Token;
+  auto proceedBracket() -> Token;
+  auto proceedOperator() -> Token;
 };
 } // namespace thermite
 #endif

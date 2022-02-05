@@ -27,7 +27,7 @@ Lexer::Lexer(std::ifstream const &file) {
   Iter = Code.begin();
 }
 
-auto Lexer::getToken() -> TokenClass {
+auto Lexer::getToken() -> Token {
   // Ignore white spaces
   while (std::isspace(LastChar) != 0)
     fetchChar();
@@ -56,16 +56,11 @@ auto Lexer::getToken() -> TokenClass {
   }
   // End
   if (LastChar == EOF)
-    return TokenClass::Eof;
-  Unknown = LastChar;
+    return {TokenClass::Eof, ""};
+  std::string Unknown{LastChar};
   fetchChar();
-  return TokenClass::Unknown;
+  return {TokenClass::Unknown, Unknown};
 }
-
-auto Lexer::getNumber() const -> double { return NumberVal; }
-auto Lexer::getIdentifier() const -> std::string { return IdentifierStr; }
-auto Lexer::getUnknown() const -> char { return Unknown; }
-auto Lexer::getBinOperator() const -> BinaryOperation { return BinaryOperator; }
 
 auto Lexer::fetchChar() -> void {
   if (Iter == Code.end()) {
@@ -81,8 +76,9 @@ auto Lexer::fetchChar() -> void {
     Offset = 0;
   }
 }
-auto Lexer::proceedIdentifier() -> TokenClass {
-  IdentifierStr.clear();
+
+auto Lexer::proceedIdentifier() -> Token {
+  std::string IdentifierStr;
   do {
     IdentifierStr += LastChar;
     fetchChar();
@@ -90,34 +86,35 @@ auto Lexer::proceedIdentifier() -> TokenClass {
 
   auto Keyword = KeyMap.find(IdentifierStr);
   if (Keyword != KeyMap.end())
-    return Keyword->second;
+    return {Keyword->second, IdentifierStr};
 
-  return TokenClass::Identifier;
+  return {TokenClass::Identifier, IdentifierStr};
 }
-auto Lexer::proceedNumber() -> TokenClass {
+
+auto Lexer::proceedNumber() -> Token {
   std::string NumStr;
   do {
     NumStr += LastChar;
     fetchChar();
   } while (std::isdigit(LastChar) != 0 || LastChar == '.');
-  NumberVal = std::stod(NumStr);
-  return TokenClass::Number;
+  return {TokenClass::Number, NumStr};
 }
-auto Lexer::proceedBracket() -> TokenClass {
+
+auto Lexer::proceedBracket() -> Token {
   auto Res = Bracket.at(LastChar);
-  fetchChar();
-  return Res;
-}
-auto Lexer::proceedOperator() -> TokenClass {
   auto Temp = LastChar;
   fetchChar();
-  if (LastChar == '=' &&
-      (Temp == '>' || Temp == '<' || Temp == '=')) {
-    BinaryOperator = static_cast<BinaryOperation>(Temp + 20);
+  return {Res, std::string{Temp}};
+}
+
+auto Lexer::proceedOperator() -> Token {
+  auto Temp = LastChar;
+  std::string Result{Temp};
+  fetchChar();
+  if (LastChar == '=' && (Temp == '>' || Temp == '<' || Temp == '=')) {
+    Result += LastChar;
     fetchChar();
-  } else {
-    BinaryOperator = static_cast<BinaryOperation>(Temp);
   }
-  return TokenClass::BinOperator;
+  return {TokenClass::BinOperator, Result};
 }
 } // namespace thermite

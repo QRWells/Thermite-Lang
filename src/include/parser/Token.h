@@ -66,15 +66,20 @@ constexpr auto tokenToCstr(TokenClass token) noexcept -> char const * {
 
 class Token {
 public:
-  explicit Token(TokenClass tokenClass, std::string_view value)
+  Token() = default;
+  Token(TokenClass tokenClass, std::string_view value)
       : TokenClass(tokenClass), Value(value) {}
+  [[nodiscard]] auto getNumber() const -> double;
+  [[nodiscard]] auto getString() const -> std::string;
+  [[nodiscard]] auto getClass() const -> enum TokenClass;
+  [[nodiscard]] auto toString() const -> std::string;
+
+  auto operator==(TokenClass const &tokenClass) -> bool;
+  friend auto operator<<(std::ostream &output, const Token &token)
+      -> std::ostream &;
 
 private:
-  inline auto toString() -> std::string {
-    return fmt::format("{{Token: {}, Value: {}}}", tokenToCstr(TokenClass),
-                       Value);
-  }
-  TokenClass TokenClass;
+  TokenClass TokenClass{};
   std::string Value;
 };
 

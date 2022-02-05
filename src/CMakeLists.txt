@@ -13,7 +13,7 @@ add_definitions(${LLVM_DEFINITIONS})
 
 add_executable(Thermite_Lang
         "main.cc"
-        "include/parser/Token.h"
+        "include/parser/Token.h" "parser/Token.cc"
         "include/parser/Lexer.h" "parser/Lexer.cc"
         "include/parser/Parser.h" "parser/Parser.cc"
         "include/parser/Generator.h" "parser/Generator.cc" 
