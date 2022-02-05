@@ -11,11 +11,9 @@
  */
 
 #pragma once
-#include <memory>
 #ifndef THERMITE_LANG_AST_ASTNODE
 #define THERMITE_LANG_AST_ASTNODE
 
-#include "ast/CodeGenContext.h"
 #include "llvm/ADT/APFloat.h"
 #include "llvm/ADT/STLExtras.h"
 #include "llvm/ADT/StringRef.h"
@@ -35,12 +33,18 @@
 #include "llvm/Transforms/Scalar.h"
 #include "llvm/Transforms/Scalar/GVN.h"
 
+#include <memory>
+#include <string>
+
+#include "ast/CodeGenContext.h"
+#include "enum/Operation.h"
+
 namespace thermite {
 
 class AstNode {
 public:
   virtual ~AstNode() = default;
-  [[nodiscard]] virtual auto codeGen(const CodeGenContext &) -> llvm::Value *;
+  [[nodiscard]] virtual auto codeGen(llvm::LLVMContext &) -> llvm::Value *;
 };
 
 class StatementNode : public AstNode {};
@@ -49,48 +53,8 @@ class VarDefStatement;
 
 using StatementList = std::vector<std::unique_ptr<StatementNode>>;
 using ExpressionList = std::vector<ExpressionNode *>;
-using ParameterList = std::vector<VarDefStatement *>;
+using ParameterList = std::vector<std::string>;
 using ArgumentList = std::vector<std::unique_ptr<ExpressionNode>>;
-
-enum class UnaryOperation {
-  Minus,
-  LogicNot,
-};
-
-enum class BinaryOperation : char {
-  /**
-   * @brief Math operation
-   *
-   */
-  Add = '+',
-  Substract = '-',
-  Multiply = '*',
-  Divide = '/',
-  Remain = '%',
-
-  LessThan = '<',
-  GreaterThan = '>',
-  Assign = '=',
-
-  LessEqual = '<' + 20,
-  GreatEqual = '>' + 20,
-  Equal = '=' + 20,
-
-  /**
-   * @brief Boolean operation
-   *
-   */
-  And = '&',
-  Or = '|',
-  Xor = '^',
-
-  /**
-   * @brief Logic operation
-   *
-   */
-  LogicAnd,
-  LogicOr
-};
 } // namespace thermite
 
 #endif // !THERMITE_LANG_AST_ASTNODE

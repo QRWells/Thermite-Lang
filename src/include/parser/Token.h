@@ -2,68 +2,12 @@
 #ifndef THERMITE_LANG_PARSER_TOKEN
 #define THERMITE_LANG_PARSER_TOKEN
 
+#include "ast/AstNode.h"
+#include "enum/TokenClass.h"
 #include <fmt/core.h>
 #include <string>
 
 namespace thermite {
-enum class TokenClass {
-  Unknown,
-  Eof,
-  Identifier,
-  Func,
-  Number,
-  Keyword,
-  UnaryOperator,
-  BinOperator,
-
-  LeftParen,
-  RightParen,
-  LeftSqBra,
-  RightSqBra,
-  LeftCuBra,
-  RightCuBra,
-
-  Comma,
-  Colon
-};
-
-constexpr auto tokenToCstr(TokenClass token) noexcept -> char const * {
-  switch (token) {
-  case TokenClass::Eof:
-    return "EOF";
-  case TokenClass::Unknown:
-    return "Unknown";
-  case TokenClass::Identifier:
-    return "Identifier";
-  case TokenClass::Func:
-    return "Func";
-  case TokenClass::Number:
-    return "Number";
-  case TokenClass::Keyword:
-    return "Keyword";
-  case TokenClass::UnaryOperator:
-    return "UnaryOperator";
-  case TokenClass::BinOperator:
-    return "BinaryOperator";
-  case TokenClass::LeftParen:
-    return "LeftParen";
-  case TokenClass::RightParen:
-    return "RightParen";
-  case TokenClass::LeftSqBra:
-    return "LeftSqBra";
-  case TokenClass::RightSqBra:
-    return "RightSqBra";
-  case TokenClass::LeftCuBra:
-    return "LeftCuBra";
-  case TokenClass::RightCuBra:
-    return "RightCuBra";
-  case TokenClass::Comma:
-    return "Comma";
-  case TokenClass::Colon:
-    return "Colon";
-  }
-}
-
 class Token {
 public:
   Token() = default;
@@ -72,6 +16,7 @@ public:
   [[nodiscard]] auto getNumber() const -> double;
   [[nodiscard]] auto getString() const -> std::string;
   [[nodiscard]] auto getClass() const -> enum TokenClass;
+  [[nodiscard]] auto getOperator() const -> enum BinaryOperation;
   [[nodiscard]] auto toString() const -> std::string;
 
   auto operator==(TokenClass const &tokenClass) -> bool;
