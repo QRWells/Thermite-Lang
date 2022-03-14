@@ -23,8 +23,8 @@ namespace thermite {
 class IntegerExpr final : public ExpressionNode {
 public:
   explicit IntegerExpr(int64_t const &val) : Val(val) {}
-  [[nodiscard]] auto codeGen(CodeGenContext const &context)
-  -> llvm::Value * override;
+  [[nodiscard]] auto codeGen(llvm::LLVMContext &context)
+      -> llvm::Value * override;
 
 private:
   int64_t Val;
@@ -33,8 +33,8 @@ private:
 class DoubleExpr final : public ExpressionNode {
 public:
   explicit DoubleExpr(double const &val) : Val(val) {}
-  [[nodiscard]] auto codeGen(CodeGenContext const &context)
-  -> llvm::Value * override;
+  [[nodiscard]] auto codeGen(llvm::LLVMContext &context)
+      -> llvm::Value * override;
 
 private:
   double Val;
@@ -43,8 +43,8 @@ private:
 class IdentifierExpr final : public ExpressionNode {
 public:
   explicit IdentifierExpr(std::string_view const name) : Name(name) {}
-  [[nodiscard]] auto codeGen(CodeGenContext const &context)
-  -> llvm::Value * override;
+  [[nodiscard]] auto codeGen(llvm::LLVMContext &context)
+      -> llvm::Value * override;
 
 private:
   std::string Name;
@@ -55,8 +55,8 @@ public:
   UnaryOpExpr(UnaryOperation const op, ExpressionNode &rhs)
       : Op(op), Rhs(rhs) {}
 
-  [[nodiscard]] auto codeGen(CodeGenContext const &context)
-  -> llvm::Value * override;
+  [[nodiscard]] auto codeGen(llvm::LLVMContext &context)
+      -> llvm::Value * override;
 
 private:
   UnaryOperation Op;
@@ -69,8 +69,8 @@ public:
                std::unique_ptr<ExpressionNode> rhs)
       : Op(op), Lhs(std::move(lhs)), Rhs(std::move(rhs)) {}
 
-  [[nodiscard]] auto codeGen(CodeGenContext const &context)
-  -> llvm::Value * override;
+  [[nodiscard]] auto codeGen(llvm::LLVMContext &context)
+      -> llvm::Value * override;
 
 private:
   BinaryOperation Op;
@@ -84,8 +84,8 @@ public:
   CallExpr(std::string_view id, ArgumentList arguments)
       : Id(id), Arguments(std::move(arguments)) {}
 
-  [[nodiscard]] auto codeGen(CodeGenContext const &context)
-  -> llvm::Value * override;
+  [[nodiscard]] auto codeGen(llvm::LLVMContext &context)
+      -> llvm::Value * override;
 
 private:
   std::string Id;
@@ -96,8 +96,8 @@ class AssignExpr final : public ExpressionNode {
 public:
   AssignExpr(std::string_view lhs, ExpressionNode &rhs) : Lhs(lhs), Rhs(rhs) {}
 
-  [[nodiscard]] auto codeGen(CodeGenContext const &context)
-  -> llvm::Value * override;
+  [[nodiscard]] auto codeGen(llvm::LLVMContext &context)
+      -> llvm::Value * override;
 
 private:
   std::string Lhs;

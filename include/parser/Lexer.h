@@ -9,18 +9,18 @@
 // Description :
 
 #pragma once
-#include "ast/AstNode.h"
-#include <cstddef>
-#include <fstream>
-#include <set>
-#include <unordered_map>
-#include <vector>
 #ifndef THERMITE_LANG_LEXER
 #define THERMITE_LANG_LEXER
 
+#include <cstddef>
+#include <fstream>
+#include <set>
 #include <string>
 #include <string_view>
+#include <unordered_map>
+#include <vector>
 
+#include "ast/AstNode.h"
 #include "ast/ExpressionNode.h"
 #include "parser/Token.h"
 
@@ -43,7 +43,7 @@ private:
       {"else", TokenClass::Keyword}, {"func", TokenClass::Func}};
 
   const std::set<char> BinOperator = {'+', '-', '*', '/', '%', '|',
-                                      '^', '&', '>', '<', '='};
+                                      '^', '&', '>', '<', '=', '!'};
 
   const std::unordered_map<char, TokenClass> Bracket = {
       {'(', TokenClass::LeftParen}, {')', TokenClass::RightParen},

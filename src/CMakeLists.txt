@@ -13,14 +13,14 @@ add_definitions(${LLVM_DEFINITIONS})
 
 add_executable(Thermite_Lang
         "main.cc"
-        "include/parser/Token.h" "parser/Token.cc"
-        "include/parser/Lexer.h" "parser/Lexer.cc"
-        "include/parser/Parser.h" "parser/Parser.cc"
-        "include/parser/Generator.h" "parser/Generator.cc" 
-        "include/ast/AstNode.h" "ast/AstNode.cc"
-        "include/ast/CodeGenContext.h" "ast/CodeGenContext.cc"
-        "include/ast/ExpressionNode.h" "ast/ExpressionNode.cc"
-        "include/ast/StatementNode.h" "ast/StatementNode.cc"
+        "parser/Token.cc"
+        "parser/Lexer.cc"
+        "parser/Parser.cc"
+        "parser/Generator.cc" 
+        "ast/AstNode.cc"
+        "ast/CodeGenContext.cc"
+        "ast/ExpressionNode.cc"
+        "ast/StatementNode.cc"
 )
 
 llvm_map_components_to_libnames(llvm_libs support core irreader)
