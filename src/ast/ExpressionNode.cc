@@ -10,30 +10,51 @@
  *
  */
 
+#include <llvm/ADT/APFloat.h>
+#include <llvm/IR/Constants.h>
+
+#include "ast/AstNode.h"
 #include "ast/ExpressionNode.h"
+#include "enum/Operation.h"
+#include "parser/Generator.h"
 
 namespace thermite {
-auto IntegerExpr::codeGen(const CodeGenContext &context) -> llvm::Value * {
-  return AstNode::codeGen(context);
+auto IntegerExpr::codeGen(Generator &generator) -> llvm::Value * {
+  return nullptr;
 }
 
-auto DoubleExpr::codeGen(const CodeGenContext &context) -> llvm::Value * {
-  return AstNode::codeGen(context);
+auto DoubleExpr::codeGen(Generator &generator) -> llvm::Value * {
+  return llvm::ConstantFP::get(generator.getContext(), llvm::APFloat(Val));
 }
 
-auto IdentifierExpr::codeGen(const CodeGenContext &context) -> llvm::Value * {
-  return AstNode::codeGen(context);
+auto IdentifierExpr::codeGen(Generator &generator) -> llvm::Value * {
+  return generator.getNamedValues().at(Name);
 }
-auto UnaryOpExpr::codeGen(const CodeGenContext &context) -> llvm::Value * {
-  return AstNode::codeGen(context);
+auto UnaryOpExpr::codeGen(Generator &generator) -> llvm::Value * {
+  return nullptr;
 }
-auto BinaryOpExpr::codeGen(const CodeGenContext &context) -> llvm::Value * {
-  return AstNode::codeGen(context);
+auto BinaryOpExpr::codeGen(Generator &generator) -> llvm::Value * {
+  auto *TLhs = Lhs->codeGen(generator);
+  auto *TRhs = Rhs->codeGen(generator);
+  switch (Op) {
+  case BinaryOperation::Add:
+    return generator.getIrBuilder().CreateFAdd(TLhs, TRhs, "addtmp");
+  default:
+    return nullptr;
+  }
 }
-auto CallExpr::codeGen(const CodeGenContext &context) -> llvm::Value * {
-  return AstNode::codeGen(context);
+
+auto CallExpr::codeGen(Generator &generator) -> llvm::Value * {
+  auto *Callee = generator.getModule().getFunction(Id);
+  std::vector<llvm::Value *> Args;
+  for (auto const &ArgExpr : Arguments)
+    Args.push_back(ArgExpr->codeGen(generator));
+
+  return generator.getIrBuilder().CreateCall(Callee, Args, "calltmp");
 }
-auto AssignExpr::codeGen(const CodeGenContext &context) -> llvm::Value * {
-  return AstNode::codeGen(context);
+
+auto AssignExpr::codeGen(Generator &generator) -> llvm::Value * {
+  return nullptr;
 }
+
 } // namespace thermite

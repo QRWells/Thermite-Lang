@@ -12,8 +12,4 @@
 
 #include "ast/AstNode.h"
 
-namespace thermite {
-auto AstNode::codeGen(const CodeGenContext &context) -> llvm::Value * {
-  return nullptr;
-}
-} // namespace thermite
+namespace thermite {} // namespace thermite
