@@ -42,14 +42,19 @@ public:
   Generator();
   ~Generator() = default;
 
+  auto getContext() -> llvm::LLVMContext &;
+  auto getNamedValues() -> std::map<std::string, llvm::Value *> &;
+  auto getIrBuilder() -> llvm::IRBuilder<> &;
+  auto getModule() -> llvm::Module &;
+
 private:
-  llvm::LLVMContext GLlvmContext;
+  llvm::LLVMContext LlvmContext;
 
-  llvm::IRBuilder<> GIrBuilder;
+  llvm::IRBuilder<> IrBuilder;
 
-  llvm::Module GModule;
+  llvm::Module Module;
 
-  std::map<std::string, llvm::Value *> GNamedValues;
+  std::map<std::string, llvm::Value *> NamedValues;
 };
 } // namespace thermite
 

@@ -36,19 +36,27 @@
 #include <memory>
 #include <string>
 
-#include "ast/CodeGenContext.h"
 #include "enum/Operation.h"
+#include "parser/Generator.h"
 
 namespace thermite {
 
 class AstNode {
 public:
   virtual ~AstNode() = default;
-  [[nodiscard]] virtual auto codeGen(llvm::LLVMContext &) -> llvm::Value *;
+  [[nodiscard]] virtual auto codeGen(Generator &) -> llvm::Value * = 0;
 };
 
-class StatementNode : public AstNode {};
-class ExpressionNode : public AstNode {};
+class StatementNode : public AstNode {
+public:
+  [[nodiscard]] auto codeGen(Generator & /*unused*/)
+      -> llvm::Value * override = 0;
+};
+class ExpressionNode : public AstNode {
+public:
+  [[nodiscard]] auto codeGen(Generator & /*unused*/)
+      -> llvm::Value * override = 0;
+};
 class VarDefStatement;
 
 using StatementList = std::vector<std::unique_ptr<StatementNode>>;

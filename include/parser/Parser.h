@@ -9,8 +9,6 @@
 // Description :
 
 #pragma once
-#include "ast/AstNode.h"
-#include "ast/StatementNode.h"
 #ifndef THERMITE_LANG_PARSER
 #define THERMITE_LANG_PARSER
 
@@ -18,8 +16,12 @@
 #include <unordered_map>
 #include <vector>
 
-#include "ast/ExpressionNode.h"
 #include "enum/Operation.h"
+
+#include "ast/AstNode.h"
+#include "ast/ExpressionNode.h"
+#include "ast/StatementNode.h"
+
 #include "parser/Lexer.h"
 #include "parser/Token.h"
 

@@ -11,12 +11,14 @@
  */
 
 #pragma once
-#include <fmt/core.h>
-#include <memory>
 #ifndef THERMITE_LANG_AST_STATEMENTNODE
 #define THERMITE_LANG_AST_STATEMENTNODE
 
+#include <memory>
+#include <string>
 #include <utility>
+
+#include <fmt/core.h>
 
 #include "ast/AstNode.h"
 #include "ast/ExpressionNode.h"
@@ -31,8 +33,7 @@ public:
                   ExpressionNode *statement)
       : Type(type), Id(id), Assign(statement) {}
 
-  [[nodiscard]] auto codeGen(llvm::LLVMContext &context)
-      -> llvm::Value * override;
+  [[nodiscard]] auto codeGen(Generator &generator) -> llvm::Value * override;
 
 private:
   IdentifierExpr const &Type;
@@ -44,6 +45,8 @@ class FuncSignature {
 public:
   FuncSignature(std::string_view id, ParameterList parameters)
       : Id(id), Parameters(std::move(parameters)) {}
+  auto codeGen(Generator &generator) -> llvm::Function *;
+  auto getName() -> std::string;
 
 private:
   std::string Id;
@@ -56,8 +59,7 @@ public:
                 std::unique_ptr<ExpressionNode> body)
       : Signature(std::move(signature)), Body(std::move(body)) {}
 
-  [[nodiscard]] auto codeGen(llvm::LLVMContext &context)
-      -> llvm::Value * override;
+  [[nodiscard]] auto codeGen(Generator &generator) -> llvm::Value * override;
 
 private:
   std::unique_ptr<FuncSignature> Signature;
