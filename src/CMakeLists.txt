@@ -18,7 +18,6 @@ add_executable(Thermite_Lang
         "parser/Parser.cc"
         "parser/Generator.cc" 
         "ast/AstNode.cc"
-        "ast/CodeGenContext.cc"
         "ast/ExpressionNode.cc"
         "ast/StatementNode.cc"
 )
