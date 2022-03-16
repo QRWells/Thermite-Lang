@@ -14,5 +14,5 @@
 
 namespace thermite {
 Generator::Generator()
-    : GIrBuilder(GLlvmContext), GModule(R"(Thermite)", GLlvmContext) {}
+    : IrBuilder(LlvmContext), Module(R"(Thermite)", LlvmContext) {}
 } // namespace thermite

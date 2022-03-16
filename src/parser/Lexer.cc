@@ -8,14 +8,15 @@
 // Created at  : 2021/12/19 3:48
 // Description :
 
-#include "parser/Lexer.h"
-#include "ast/AstNode.h"
-
 #include <cctype>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <type_traits>
+
+#include "ast/AstNode.h"
+#include "parser/Lexer.h"
+#include "parser/Token.h"
 
 namespace thermite {
 Lexer::Lexer(std::string_view const &code) : Code(code), Iter(Code.begin()) {}
@@ -54,6 +55,12 @@ auto Lexer::getToken() -> Token {
     if (LastChar != EOF)
       return getToken();
   }
+
+  if (LastChar == ';')
+    return {TokenClass::SemiColon, ";"};
+  if (LastChar == ':')
+    return {TokenClass::Colon, ":"};
+
   // End
   if (LastChar == EOF)
     return {TokenClass::Eof, ""};
@@ -111,7 +118,8 @@ auto Lexer::proceedOperator() -> Token {
   auto Temp = LastChar;
   std::string Result{Temp};
   fetchChar();
-  if (LastChar == '=' && (Temp == '>' || Temp == '<' || Temp == '=')) {
+  if (LastChar == '=' &&
+      (Temp == '>' || Temp == '<' || Temp == '=' || Temp == '!')) {
     Result += LastChar;
     fetchChar();
   }
