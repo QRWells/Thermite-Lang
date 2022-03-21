@@ -13,8 +13,11 @@
 #define THERMITE_LANG_PARSER
 
 #include <memory>
+#include <ostream>
 #include <unordered_map>
 #include <vector>
+
+#include <llvm/Support/raw_ostream.h>
 
 #include "enum/Operation.h"
 
@@ -28,11 +31,11 @@
 namespace thermite {
 class Parser {
 public:
-  Parser() = default;
+  Parser() = delete;
+  explicit Parser(std::unique_ptr<Lexer> lexer) : Lexer(std::move(lexer)) {}
   ~Parser() = default;
 
-  [[nodiscard]] auto parse(std::vector<Token> const &)
-      -> std::unique_ptr<AstNode>;
+  auto generate(llvm::raw_ostream &output = llvm::outs()) -> int;
 
 private:
   std::unique_ptr<Lexer> Lexer;
@@ -61,8 +64,8 @@ private:
   [[nodiscard]] auto parseFuncDef() -> std::unique_ptr<FuncStatement>;
   [[nodiscard]] auto parseTopFunc() -> std::unique_ptr<FuncStatement>;
 
-  auto getNextToken() -> void;
   [[nodiscard]] auto getOperatorPrecedence() const -> int;
+  auto getNextToken() -> void;
 };
 } // namespace thermite
 #endif

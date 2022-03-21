@@ -8,21 +8,42 @@
 // Created at  : 2021/12/19 3:57
 // Description :
 
+#include <iostream>
 #include <memory>
+#include <ostream>
 #include <utility>
+
+#include <llvm/Support/raw_ostream.h>
+
+#include <fmt/color.h>
+#include <fmt/core.h>
 
 #include "ast/AstNode.h"
 #include "ast/ExpressionNode.h"
 #include "ast/StatementNode.h"
+#include "parser/Generator.h"
 #include "parser/Parser.h"
 #include "parser/Token.h"
 
-
 namespace thermite {
-auto Parser::parse(const std::vector<Token> &tokenList)
-    -> std::unique_ptr<AstNode> {
+auto Parser::generate(llvm::raw_ostream &output) -> int {
+  if (Lexer == nullptr)
+    fmt::print(stderr, fmt::fg(fmt::color::red), "No lexer was provided!");
+  Generator G;
   getNextToken();
-  return {};
+  while (true) {
+    switch (CurrentToken.getClass()) {
+    case TokenClass::Eof:
+      return -1;
+    case TokenClass::Func:
+      parseFuncDef()->codeGen(G)->print(output);
+      break;
+    default:
+      parseTopFunc()->codeGen(G)->print(output);
+      break;
+    }
+  }
+  return 0;
 }
 
 auto Parser::parseNumberExpr() -> std::unique_ptr<ExpressionNode> {
