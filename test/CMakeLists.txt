@@ -10,11 +10,14 @@ add_executable(Lexer-Test
         "Lexer-Test/Test.cc"
 )
 
+
+llvm_map_components_to_libnames(llvm_libs support core irreader)
+target_link_libraries(Lexer-Test ${llvm_libs})
+target_link_libraries(Lexer-Test fmt::fmt)
+
 add_executable(Parser-Test
         "Parser-Test/Test.cc"
 )
 
-llvm_map_components_to_libnames(llvm_libs support core irreader)
-target_link_libraries(Thermite_Lang ${llvm_libs})
-
-target_link_libraries(Thermite_Lang fmt::fmt)
+target_link_libraries(Parser-Test ${llvm_libs})
+target_link_libraries(Parser-Test fmt::fmt)

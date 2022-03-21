@@ -1,4 +1,5 @@
-func test(x){
+const static auto PROG1 =
+    R"(func test(x){
   i = 25
   if x <= 0 then
     x = x + 2.5
@@ -13,3 +14,4 @@ func main(args){
     func(35)
   }
 }
+)";
